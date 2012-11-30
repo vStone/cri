@@ -120,12 +120,26 @@ To add a command as a subcommand to another command, use the {Cri::Command#add_c
 	root_cmd.add_command cmd_add
 	root_cmd.add_command cmd_commit
 	root.cmd.add_command cmd_init
+
+
 Settings
 --------
+
 Some settings are available for changing the way cri behaves.
 Currently, you can use following settings:
 
 * `:noparent`: Prevents merging settings from a parent command when using subcommands.
+* `:default`:  Default command to run when no command is specified.
+
+
+Example using settings:
+
+	command = Cri::Command.define do
+	  name        'dostuff'
+	  usage       'dostuff'
+	  description 'dostuff'
+	  settings    :default => 'help'
+	end
 
 
 ### Note for developers:

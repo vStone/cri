@@ -269,11 +269,16 @@ module Cri
 
         # Get command
         if subcmd_name.nil?
-          $stderr.puts "#{name}: no command given"
-          exit 1
+          if self.settings[:default] and ! [nil, '', self.name].include?(self.settings[:default])
+            subcmd_name= self.settings[:default]
+            opts_and_args_after_subcmd = opts_before_subcmd
+            opts_before_subcmd = {}
+          else
+            $stderr.puts "#{name}: no command given"
+            exit 1
+          end
         end
         subcommand = self.command_named(subcmd_name)
-
         # Run
         subcommand.run(opts_and_args_after_subcmd, opts_before_subcmd)
       end
