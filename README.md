@@ -117,10 +117,23 @@ into manageable pieces.
 Commands can have subcommands. For example, the `git` commandline tool would be represented by a command that has subcommands named `commit`, `add`, and so on. Commands with subcommands do not use a run block; execution will always be dispatched to a subcommand (or none, if no subcommand is found).
 
 To add a command as a subcommand to another command, use the {Cri::Command#add_command} method, like this:
-
 	root_cmd.add_command cmd_add
 	root_cmd.add_command cmd_commit
 	root.cmd.add_command cmd_init
+Settings
+--------
+Some settings are available for changing the way cri behaves.
+Currently, you can use following settings:
+
+* `:noparent`: Prevents merging settings from a parent command when using subcommands.
+
+
+### Note for developers:
+
+Settings from a super command are merged when using the settings method, so use
+that in stead of calling @settings directly, which will always contain unmerged
+settings. The hash is not merged recursively. You can ofcourse always merge them
+manually by using `@settings[:key]` and `self.supercommand.settings[:key]` directly.
 
 Contributors
 ------------

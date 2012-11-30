@@ -8,6 +8,7 @@ class Cri::CommandTestCase < Cri::TestCase
       usage       'moo [options] arg1 arg2 ...'
       summary     'does stuff'
       description 'This command does a lot of stuff.'
+      settings    :foo => :simple_cmd
 
       option    :a, :aaa, 'opt a', :argument => :optional do |value, cmd|
         $stdout.puts "#{cmd.name}:#{value}"
@@ -44,6 +45,7 @@ class Cri::CommandTestCase < Cri::TestCase
       usage       'super [command] [options] [arguments]'
       summary     'does super stuff'
       description 'This command does super stuff.'
+      settings    :foo => 'super_cmd'
 
       option    :a, :aaa, 'opt a', :argument => :optional do |value, cmd|
         $stdout.puts "#{cmd.name}:#{value}"
@@ -60,6 +62,7 @@ class Cri::CommandTestCase < Cri::TestCase
       usage       'sub [options]'
       summary     'does subby stuff'
       description 'This command does subby stuff.'
+      settings    :bar => 'sub'
 
       option    :m, :mmm, 'opt m', :argument => :optional
       required  :n, :nnn, 'opt n'
@@ -83,6 +86,7 @@ class Cri::CommandTestCase < Cri::TestCase
       usage       'sink thing_to_sink'
       summary     'sinks stuff'
       description 'Sinks stuff (like ships and the like).'
+      settings    :foo => 'sink', :noparent => true
 
       run do |opts, args|
         $stdout.puts "Sinking!"
@@ -118,6 +122,18 @@ class Cri::CommandTestCase < Cri::TestCase
 
     super_cmd
   end
+
+  def test_merged_settings_noparent_undef
+    sub = nested_cmd.subcommands.find { |cmd| cmd.name == 'sub' }
+
+    assert_equal [{:foo => 'super_cmd',:bar => 'sub'}], [sub.settings]
+  end
+
+  def test_merged_settings_noparent_true
+    sink = nested_cmd.subcommands.find { |cmd| cmd.name == 'sink' }
+    assert_equal [{:foo => 'sink', :noparent => true}], [sink.settings]
+  end
+
 
   def test_invoke_simple_without_opts_or_args
     out, err = capture_io_while do
